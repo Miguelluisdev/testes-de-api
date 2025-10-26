@@ -57,11 +57,6 @@ query getCountry($code: ID!) {
 |----|----------|-----------|-----------|
 | TC01 | Consulta país por código (`getCountry`) | Validar se a API retorna corretamente os dados de um país específico (BR) | ✅ Sucesso |
 | TC02 | Consulta países por continente (`getCountriesByContinent`) | Verificar se países da América do Sul são retornados corretamente | ✅ Sucesso |
-| TC03 | Consulta lista de continentes (`getAllContinents`) | Confirmar que a lista de continentes é retornada sem erros | ✅ Sucesso |
-| TC04 | Consulta idiomas (`getAllLanguages`) | Validar que todos os idiomas cadastrados são retornados | ✅ Sucesso |
-| TC05 | Consulta país + continente (`getCountryWithContinent`) | Testar o relacionamento entre país e continente | ✅ Sucesso |
-| TC06 | Consulta combinada (`combinedQuery`) | Validar execução de múltiplas queries em uma única requisição | ✅ Sucesso |
-| TC07 | Consulta complexa com idiomas aninhados (`complexQuery`) | Testar respostas aninhadas e estruturas mais profundas | ✅ Sucesso |
 
 ---
 
@@ -140,15 +135,6 @@ Os testes mostraram que a **Countries GraphQL API**:
 - Possui schema padronizado, ideal para estudos e automação de testes GraphQL.
 
 ✅ **Resultado Final:** Todos os cenários passaram com sucesso.
-
----
-
-## 🧠 Próximos Passos
-
-- Criar cenários negativos (ex: código inexistente ou variável nula).  
-- Automatizar os testes via **Newman** (CLI do Postman).  
-- Integrar a execução no **CI/CD** (ex: GitHub Actions).  
-- Adicionar monitoramento contínuo de disponibilidade da API.
 
 ---
 
