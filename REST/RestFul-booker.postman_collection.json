@@ -1,0 +1,590 @@
+{
+	"info": {
+		"_postman_id": "da3cebd1-2de2-41cb-b9fa-7ec4a3563b28",
+		"name": "RestFul-booker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37063479",
+		"_collection_link": "https://darir0.postman.co/workspace/curso-postman~db79f9bd-20ff-4177-b635-648aae351eba/collection/37063479-da3cebd1-2de2-41cb-b9fa-7ec4a3563b28?action=share&source=collection_link&creator=37063479"
+	},
+	"item": [
+		{
+			"name": "Ping - HealthCheck",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/ping",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"ping"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth-token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get('schema'))).to.be.true;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Token exists\", function () {\r",
+							"    pm.expect(pm.response.json()).to.have.property(\"token\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.environment.set('token', pm.response.json().token);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.unset('schema')\r",
+							"\r",
+							"pm.globals.set('schema' , {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"token\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"token\"\r",
+							"  ]\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking - GetBookingIds",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.unset('schema')\r",
+							"\r",
+							"pm.globals.set('schema' ,{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"array\",\r",
+							"  \"items\": {\r",
+							"    \"type\": \"object\",\r",
+							"    \"properties\": {\r",
+							"      \"bookingid\": {\r",
+							"        \"type\": \"number\"\r",
+							"      }\r",
+							"    },\r",
+							"    \"required\": [\r",
+							"      \"bookingid\"\r",
+							"    ]\r",
+							"  }\r",
+							"})\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get('schema'))).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is an array\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"    pm.expect(json).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each item has bookingid as number\", function () {\r",
+							"    let json = pm.response.json();\r",
+							"\r",
+							"    json.forEach(item => {\r",
+							"        pm.expect(item).to.be.an(\"object\");\r",
+							"        pm.expect(item).to.have.property(\"bookingid\");\r",
+							"        pm.expect(item.bookingid).to.be.a(\"number\");\r",
+							"    });\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/booking",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking - GetBooking",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.unset('schema')\r",
+							"\r",
+							"pm.globals.set('schema' , {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"firstname\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"lastname\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"totalprice\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"depositpaid\": {\r",
+							"      \"type\": \"boolean\"\r",
+							"    },\r",
+							"    \"bookingdates\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"checkin\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"checkout\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"checkin\",\r",
+							"        \"checkout\"\r",
+							"      ]\r",
+							"    },\r",
+							"    \"additionalneeds\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"firstname\",\r",
+							"    \"lastname\",\r",
+							"    \"totalprice\",\r",
+							"    \"depositpaid\",\r",
+							"    \"bookingdates\",\r",
+							"    \"additionalneeds\"\r",
+							"  ]\r",
+							"} )\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get('schema'))).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/booking/13",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking",
+						"13"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking - CreateBooking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is valid JSON\", function () {\r",
+							"    pm.expect(() => pm.response.json()).to.not.throw();\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is an object\", function () {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"object\");\r",
+							"});\r",
+							"\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get('schema'))).to.be.true;\r",
+							"});\r",
+							"\r",
+							"pm.globals.set(\"bookingid\", pm.response.json().bookingid);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.unset('schema')\r",
+							"\r",
+							"pm.globals.set('schema' ,{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"bookingid\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"booking\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"firstname\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"lastname\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"totalprice\": {\r",
+							"          \"type\": \"number\"\r",
+							"        },\r",
+							"        \"depositpaid\": {\r",
+							"          \"type\": \"boolean\"\r",
+							"        },\r",
+							"        \"bookingdates\": {\r",
+							"          \"type\": \"object\",\r",
+							"          \"properties\": {\r",
+							"            \"checkin\": {\r",
+							"              \"type\": \"string\"\r",
+							"            },\r",
+							"            \"checkout\": {\r",
+							"              \"type\": \"string\"\r",
+							"            }\r",
+							"          },\r",
+							"          \"required\": [\r",
+							"            \"checkin\",\r",
+							"            \"checkout\"\r",
+							"          ]\r",
+							"        },\r",
+							"        \"additionalneeds\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"firstname\",\r",
+							"        \"lastname\",\r",
+							"        \"totalprice\",\r",
+							"        \"depositpaid\",\r",
+							"        \"bookingdates\",\r",
+							"        \"additionalneeds\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"bookingid\",\r",
+							"    \"booking\"\r",
+							"  ]\r",
+							"})\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstname\" : \"{{$randomFirstName}}\",\r\n    \"lastname\" : \"{{$randomLastName}}\",\r\n    \"totalprice\" : \"{{$randomPrice}}\",\r\n    \"depositpaid\" : \"{{$randomBoolean}}\",\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{$randomDateRecent}}\",\r\n        \"checkout\" : \"{{$randomDateFuture}}\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/booking",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Booking - UpdateBooking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test('Schema is valid', function () {\r",
+							"    pm.expect(tv4.validate(pm.response.json(), pm.globals.get('schema'))).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.globals.unset('schema')\r",
+							"\r",
+							"pm.globals.set('schema' ,{\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"firstname\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"lastname\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"totalprice\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"depositpaid\": {\r",
+							"      \"type\": \"boolean\"\r",
+							"    },\r",
+							"    \"bookingdates\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"checkin\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"checkout\": {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"checkin\",\r",
+							"        \"checkout\"\r",
+							"      ]\r",
+							"    },\r",
+							"    \"additionalneeds\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"firstname\",\r",
+							"    \"lastname\",\r",
+							"    \"totalprice\",\r",
+							"    \"depositpaid\",\r",
+							"    \"bookingdates\",\r",
+							"    \"additionalneeds\"\r",
+							"  ]\r",
+							"})\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Cookie",
+						"value": "token={{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstname\" : \"James\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://restful-booker.herokuapp.com/booking/1",
+					"protocol": "https",
+					"host": [
+						"restful-booker",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"booking",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
